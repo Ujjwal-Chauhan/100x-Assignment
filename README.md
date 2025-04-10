@@ -1,2 +1,2 @@
 # 100x-Assignment
-Projectsfrom 100x Dev-Cohort3.0
+Projects from 100x Dev-Cohort3.0
