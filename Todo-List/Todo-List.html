@@ -1,0 +1,225 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo-List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<style>
+    body{
+        display: flex;
+        justify-content: center;
+        background-color: #2C2C2C;
+        color: #E0E0E0;   
+    }
+
+    .parentDiv{
+        border-radius: 20px; 
+        width: 700px;
+        max-height: 600px;
+        margin-top: 50px;
+        background-color: #1E1E1E; 
+        overflow-y: auto;      
+    }
+
+    #heading{
+        margin-left: 40%;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+        color: #ffffff;
+    }
+
+    .addTodoBar{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 40px;  
+        margin-left: 168px;
+        margin-right: 168px;
+        background-color: #2A2A2A; 
+    }
+
+    #txt{
+        flex: 1;
+        margin-right: 20px;
+        padding-left: 20px; 
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: large;
+        border: none;
+        outline: none;
+        border-radius: 40px;
+        color: #E0E0E0;
+        background-color: transparent;
+    }
+            
+    #addTodoButton{
+        padding: 15px;
+        padding-left: 25px;
+        padding-right: 25px;
+        font-size: large;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        background-color: #2979FF;
+        color: white;
+    }
+
+    #addTodoButton:hover {
+        background-color: #1565C0;
+        transform: scale(1.05);
+        transition: 0.2s ease;
+    }
+
+    #todoList{
+        margin: 30px;
+        width: 90%; 
+        box-sizing: border-box; 
+    }
+
+    /* Scroll bar... */
+    ::-webkit-scrollbar {
+    width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background-color: #cdc4c4;  
+    border-radius: 5px; 
+    }
+    
+    ::-webkit-scrollbar-track {
+    background-color: #1E1E1E;
+    }   
+</style>
+
+<body>
+    <div class = "parentDiv">
+        <h1 id = "heading">Todo-List</h1>
+        
+        <div class = "addTodoBar">
+            <input type="text" placeholder="Add Your Task" id = "txt" >
+            <button id = "addTodoButton" onclick="addTodo()"> Add </button>
+        </div>
+
+        <div id = "todoList"></div>
+    </div>
+</body>
+
+<script> 
+    // state : variables
+    let todos = []     
+    
+    
+    function addTodo() {
+        if (document.getElementById("txt").value === ""){
+            alert("Try adding a todo")
+            return;
+        } 
+
+        todos.push({
+            title: document.getElementById("txt").value,
+            isClicked: "False"
+        })
+        document.getElementById("txt").value = ""
+        render()
+    }
+
+    
+    // Components : BluePrint-(HTML elements)
+    function todoComponents(element, index) {       
+        // Todo Containg Div..
+        const todoDiv = document.createElement("div")
+        todoDiv.style.display = "flex"
+        todoDiv.style.justifyContent = "space-between"
+        todoDiv.style.alignItems = "center"
+        todoDiv.style.marginBottom = "10px"
+        todoDiv.style.marginLeft = "50px"
+        todoDiv.style.marginRight = "50px"
+        todoDiv.style.backgroundColor = "#2A2A2A";
+        todoDiv.style.color = "#E0E0E0";    
+        todoDiv.style.padding = "10px";
+        todoDiv.style.borderRadius = "20px"
+
+        // Div to store checkBox & todo
+        const todoTxtDiv = document.createElement("div")
+        todoTxtDiv.style.display = "flex"
+        todoTxtDiv.style.justifyContent = "flex-start"
+        todoTxtDiv.style.alignItems = "center"
+        
+        // CheckBox..
+        const checkBox = document.createElement("button")
+        checkBox.style.marginRight = "10px"
+        checkBox.style.borderRadius = "50%"
+        checkBox.style.border = "none"
+        checkBox.style.padding = "10px" 
+        checkBox.style.backgroundColor = element.isClicked == "True" ? "#64B5F6" : "#424242";
+        if (element.isClicked == "True") {
+            checkBox.style.backgroundColor = "rgb(44, 133, 211)"
+        }
+
+        checkBox.onclick = () => {
+            checkBox.style.backgroundColor = "rgb(44, 133, 211)"
+            todoTxt.style.textDecoration = "line-through"
+            element.isClicked = "True"
+        }
+
+
+        // Todo-txt...
+        const todoTxt = document.createElement("div")
+        todoTxt.style.fontSize = "25px"
+        todoTxt.style.fontFamily = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif"
+        todoTxt.style.marginRight = "10px"
+        todoTxt.style.wordWrap = "break-word"
+        todoTxt.style.overflowWrap = "break-word"
+        todoTxt.style.maxWidth = "420px"
+
+        if (element.isClicked == "True") {
+            todoTxt.style.textDecoration = "line-through"
+        }
+
+        
+        // Div to store Delete Button..
+        const deleteDiv = document.createElement("div")
+
+        // Delete Button..
+        const deleteButton = document.createElement("button")
+        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'
+        deleteButton.style.fontSize = "18px"
+        deleteButton.style.padding = "10px"
+        deleteButton.style.border = "none"
+        deleteButton.style.borderRadius = "10px"
+        deleteButton.style.backgroundColor = "#B71C1C";  
+        deleteButton.style.color = "#FFCDD2";            
+
+        // Adding Todos.. 
+        todoTxt.textContent = element.title 
+
+        // Deleting Todos function..
+        deleteButton.onclick = function () {
+        todos.splice(index, 1)
+        render()
+        }
+
+
+        todoTxtDiv.appendChild(checkBox)
+        todoTxtDiv.appendChild(todoTxt)
+        deleteDiv.appendChild(deleteButton)
+
+        todoDiv.appendChild(todoTxtDiv)
+        todoDiv.appendChild(deleteDiv)
+        
+        return todoDiv
+    }
+
+
+    // react... Rendering (Reconcilliation)
+    function render() {         
+        const todoList = document.getElementById("todoList")     
+        todoList.innerHTML = ""
+        for (let i in todos) {
+            let element = todoComponents(todos[i], i)
+            todoList.appendChild(element)           
+        }    
+    }
+</script>
+</html>
